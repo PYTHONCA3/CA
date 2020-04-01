@@ -1,0 +1,43 @@
+from flask import Flask, render_template, url_for
+from forms import RegistrationForm, LoginForm
+
+app = Flask(__name__)
+
+app.config ['SECRET_KEY'] = 'd82e39598a65e096692a3d26fc6ac3dc'
+
+posts =[
+	{
+		'author': 'Oladimeji Ibrahim',
+		'title': 'Blog Post 1',
+		'content': 'First Post content',
+		'date_posted': 'April 20, 2020'
+	},
+	{
+		'author': 'Ibrahim IDayo',
+		'title': 'Blog Post 2',
+		'content': 'Second Post content',
+		'date_posted': 'April 22, 2020'
+	}
+]
+
+@app.route('/')
+def hello ():
+	return render_template ('home.html.j2',posts=posts)
+
+@app.route('/about')
+def about ():
+	return render_template ('about.html.j2', title='about')
+
+@app.route ('/register')
+def register():
+	form = RegistrationForm()
+	return render_template ('register.html.j2', title='Register', form=form )
+
+@app.route ('/login')
+def login():
+	form = LoginForm()
+	return render_template ('login.html', title='Login', form=form )
+
+
+if __name__ == "__main__":
+    app.run(debug = True, host = "0.0.0.0", port = 3000)
