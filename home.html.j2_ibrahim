@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block content %}
+	<div class="main_slider">
+		<div class="post-slider">
+			<i class="fa fa-arrow-circle-left next"></i>
+		<i class ="fa fa-arrow-circle-right prev"></i>	
+			<div class="post-wrapper">
+				<div class="post">1 </div>
+				<div class="post">2 </div>
+				<div class="post">3 </div>
+				<div class="post">4 </div>
+				<div class="post">5 </div>
+			</div>
+		</div>
+	</div>
+		 	
+	 
+	{% for post in posts %}
+
+		<article class="media content-section">
+		  <div class="media-body">
+		    <div class="article-metadata">
+		      <a class="mr-2" href="#">{{ post.author }}</a>
+		      <small class="text-muted">{{ product.date_posted }}</small>
+		    </div>
+		    <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
+		    <p class="article-content">{{ product.content }}</p>
+		  </div>
+
+		</article>
+	{%endfor%}
+ {% endblock content %}
