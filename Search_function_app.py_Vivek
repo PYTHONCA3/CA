@@ -1,0 +1,34 @@
+from flask import Flask, render_template, request
+from flask_sqlalchemy import SQLAlchemy
+from models import Schema
+
+app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
+db = SQLAlchemy(app)
+
+class Product(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    description = db.Column(db.String)
+
+def get_products(name, description):
+    return set(list(Product.query.filter(Product.name.contains(name))) +
+list(Product.query.filter(Product.description.contains(description))))
+
+@app.route("/table", methods=['GET', 'POST'])
+def show_table():
+    if request:
+        search_key = request.form.get("searchKey")
+    else:
+        search_key = ""
+    products = Product.query.filter()
+    return render_template('table.html', **{'get_products': get_products, 'search_key':search_key})
+
+db.create_all()
+#db.session.add(Product(name="product_4", description="the 04 of all"))
+#db.session.commit()
+
+if __name__ == "__main__":
+    Schema()
+    app.run(debug=True)
+
