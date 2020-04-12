@@ -1,0 +1,25 @@
+import sqlite3
+from flask_sqlalchemy import SQLAlchemy
+
+class Schema:
+    def __init__(self):
+        self.conn = sqlite3.connect('shopping.db')
+        self.create_product_table()
+
+    def create_product_table(self):
+        query = """
+        CREATE TABLE IF NOT EXISTS "products" (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        pName VARCHAR NOT NULL,
+        description VARCHAR,
+        price REAL,
+        available REAL,
+        category VARCHAR,
+        item VARCHAR,
+        pCode VARCHAR,
+        picture TEXT,
+        date_created DEFAULT CURRENT_DATE
+        );
+        """
+
+        self.conn.execute(query)
