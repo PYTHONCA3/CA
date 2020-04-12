@@ -1,0 +1,60 @@
+from flask import Flask, render_template, request
+from flask_sqlalchemy import SQLAlchemy
+from models import Schema
+
+app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///shopping.db"
+db = SQLAlchemy(app)
+
+class Products(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    pName = db.Column(db.String, nullable=False)
+    description = db.Column(db.String)
+    price = db.Column(db.Float)
+    available = db.Column(db.Float)
+    category = db.Column(db.String)
+    pCode = db.Column(db.String)
+    item = db.Column(db.String)
+    picture = db.Column(db.String)
+    date_created = db.Column(db.DateTime)
+
+def get_products(pName, description):
+	if(pName==None or description==None) :
+		return set(list(Products.query.filter()))
+	else :
+	    return set(list(Products.query.filter(Products.pName.contains(pName))) +
+list(Products.query.filter(Products.description.contains(description))))
+
+@app.route("/table", methods=['GET', 'POST'])
+def show_table():
+    if request:
+        search_key = request.form.get("searchKey")
+    else:
+        search_key = ""
+    products = Products.query.filter()
+    return render_template('table.html', **{'get_products': get_products, 'search_key':search_key})
+
+db.create_all()
+db.session.add(Products(pName='Rice 1Kg',price=0.99, description='Rice', available=4.00, category='plain-rice', item='Rice', pCode='r-007', picture='1420532885.jpg'))
+db.session.add(Products(pName='Pasta', price=1.00, description='wheat-pasta', available=8.00, category='pasta', item='Pasta', pCode='p-004', picture='1561513587531_11.jpeg'))
+db.session.add(Products(pName='Bread', price=1.50, description='wholewgrain-sliced-bread', available=8.00, category='bread', item='bread', pCode='b-001', picture='https://5.imimg.com/data5/HH/HD/IE/SELLER-2726350/whole-wheat-bread-500x500.jpeg'))
+db.session.add(Products(pName='Oats', price=2.99, description='Quick-Oats', available=9.00, category='oats', item='oats', pCode='o-001', picture='https://images-na.ssl-images-amazon.com/images/I/71qyzy9QnML._SL1500_.jpg'))
+db.session.add(Products(pName='Cooking-oil', price=3.99, description='Cooking-oil', available=10.00, category='oil', item='oil', pCode='c-002', picture='https://d2wwnnx8tks4e8.cloudfront.net/images/app/large/5000232828743_3.JPG'))
+db.session.add(Products(pName='Butter', price=4.99, description='Natural-Butter', available=12.00, category='butter', item='butter', pCode='b-003', picture='https://cdn.agriland.ie/uploads/2015/09/Kerrygold-ireland-1024x685.png'))
+db.session.add(Products(pName='Milk', price=5.00, description='Light-milk', available=10.00, category='milk', item='milk', pCode='m-004', picture='https://lh3.googleusercontent.com/proxy/cfHkvFXqBClEJEs15DYr_Vtqt9eUiuWVseMbXgv9XKDlqxvDRqsQBFz2g1VtDshXPihDCS1huOel-VD0o176XQ'))
+db.session.add(Products(pName='Eggs', price=2.00, description='Eggs', available=50.00, category='egg', item='egg', pCode='e-005', picture='https://d2wwnnx8tks4e8.cloudfront.net/images/app/large/5099839044625_3.JPG'))
+db.session.add(Products(pName='Onions', price=4.00, description='Large-Onions', available=20.00, category='onion', item='onion', pCode='n-006', picture=''))
+db.session.add(Products(pName='Garlic', price=5.00, description='Garlic', available=10.00, category='garlic', item='garlic', pCode='g-007', picture='https://www.fruithillfarm.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/s/q/squareimg_9452.jpg'))
+db.session.add(Products(pName='Fruit', price=7.00, description='Fruits', available=50.00, category='fruit', item='fruit', pCode='f-010', picture='https://i.pinimg.com/originals/31/13/c3/3113c3e7fdbfdaeb3626f889ec4993e8.jpg'))
+db.session.add(Products(pName='Vegetables ', price=8.00, description='Vegetables ', available=20.00, category='vegetables ', item='vegetables ', pCode='v-002', picture='https://www.goodfoodireland.ie/sites/default/files/styles/provider_photo_large/public/places/photos/669/Vegetables.jpg?itok=GB3AIeor'))
+db.session.add(Products(pName='Pulses',price=2.00, description='Pulses', available=20.00, category='pulses', item='pulses', pCode='p-003', picture='https://www.excellenceimporters.com/admin/shop/Newforge_Red_Kidney_Beans_in_Brine_800g.jpg'))
+db.session.add(Products(pName='Salt', price=2.00, description='Salt', available=20.00, category='salt', item='salt', pCode='s-004', picture='heritage-table-salt-750g.jpg'))
+db.session.add(Products(pName='Pepper ', price=3.00, description='Pepper ', available=15.00, category='pepper', item='pepper', pCode='r-005', picture='https://nutsaboutwine.ie/wp-content/uploads/2015/11/keoghs-sweet-chillie.jpg'))
+db.session.add(Products(pName='Herbs & spices', price=8.00, description='Herbs & spices', available=10.00, category='spices', item='spices', pCode='h-005', picture=''))
+db.session.add(Products(pName='Sugar', price=3.00, description='Sugar', available=20.00, category='sugar', item='sugar', pCode='s-007', picture='https://needa.ie/media/catalog/product/cache/25/thumbnail/9df78eab33525d08d6e5fb8d27136e95/w/h/white-granulated-sugar-1kg.jpg'))
+db.session.add(Products(pName='Meat', price=30.00, description='Meat', available=20.00, category='meat', item='meat', pCode='m-009', picture='https://cdn.agriland.ie/uploads/2015/04/Meat-butcher2-1024x837.jpg'))
+db.session.commit()
+
+if __name__ == "__main__":
+    Schema()
+    app.run(debug=True)
