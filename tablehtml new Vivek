@@ -1,0 +1,11 @@
+{% extends 'base.html' %} {% block header %}
+{% block title %}Product Table{% endblock %}
+{% endblock %} {% block content %}
+Search: 
+{{search_key}}
+ 
+#	Name	Description	Price	Available	Image
+{% for i in get_products(search_key, search_key) %}
+{{i.id}}	{{i.pName}}	{{i.description}}	{{i.price}}	{{i.available}}	
+{% endfor%}
+{% endblock %}
