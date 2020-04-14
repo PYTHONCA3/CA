@@ -1,8 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, TextAreaField, DecimalField, DateField
 import phonenumbers
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from helo.model import User
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+from helo import images
 
 class RegistrationForm(FlaskForm):
 	fullname = StringField('Fullname', validators=[DataRequired(), Length(min=2, max=100)])
@@ -29,6 +31,21 @@ class LoginForm(FlaskForm):
 	remember = BooleanField ('Remember Me')
 	submit = SubmitField('Login')
 
+class Productform(FlaskForm):
+	id = IntegerField('Id', validators=[DataRequired()])
+	pName = StringField('Product Name', validators=[DataRequired(), Length(min=2, max=100)])
+	description = TextAreaField('Product Description', validators=[DataRequired()])
+	price = DecimalField ('Product Price', validators=[DataRequired()])
+	available = DecimalField ('Product Available', validators=[DataRequired()])
+	category = StringField('Product Name', validators=[DataRequired()])
+	pCode = StringField('Product Name', validators=[DataRequired()])
+	item = StringField('Product Name', validators=[DataRequired()])
+	picture = FileField('Image', validators=[FileRequired(), FileAllowed(images, 'Images only!')])
+	date_created = DateField('Date', validators=[DataRequired()])
+	submit = SubmitField('Add')
 	
+ 
 
 
+
+ 
