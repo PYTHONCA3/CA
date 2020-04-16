@@ -1,0 +1,175 @@
+@app.route('/admin_add_product', methods=['POST', 'GET'])
+def admin_add_product():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        price = request.form['price']
+        description = request.form['description']
+        available = request.form['available']
+        category = request.form['category']
+        item = request.form['item']
+        code = request.form['code']
+        file = request.files['picture']
+        if name and price and description and available and category and item and code and file:
+            pic = file.filename
+            photo = pic.replace("'", "")
+            picture = photo.replace(" ", "_")
+            if picture.lower().endswith(('.png', '.jpg', '.jpeg')):
+                save_photo = photos.save(file, folder=category)
+                if save_photo:
+                    # Create Cursor
+                    curs = mysql.connection.cursor()
+                    curs.execute("INSERT INTO products(pName,price,description,available,category,item,pCode,picture)"
+                                 "VALUES(%s, %s, %s, %s, %s, %s, %s, %s)",
+                                 (name, price, description, available, category, item, code, picture))
+                    mysql.connection.commit()
+                    product_id = curs.lastrowid
+                    curs.execute("INSERT INTO product_level(product_id)" "VALUES(%s)", [product_id])
+                    if category == 'Milk':
+                        level = request.form.getlist('Milk')
+                        for lev in level:
+                            yes = 'yes'
+                            query = 'UPDATE product_level SET {field}=%s WHERE product_id=%s'.format(field=lev)
+                            curs.execute(query, (yes, product_id))
+                            # Commit cursor
+                            mysql.connection.commit()
+                    elif category == 'Oil':
+                        level = request.form.getlist('Oil')
+                        for lev in level:
+                            yes = 'yes'
+                            query = 'UPDATE product_level SET {field}=%s WHERE product_id=%s'.format(field=lev)
+                            curs.execute(query, (yes, product_id))
+                            # Commit cursor
+                            mysql.connection.commit()
+                    elif category == 'Vegetables':
+                        level = request.form.getlist('Vegetables')
+                        for lev in level:
+                            yes = 'yes'
+                            query = 'UPDATE product_level SET {field}=%s WHERE product_id=%s'.format(field=lev)
+                            curs.execute(query, (yes, product_id))
+                            # Commit cursor
+                            mysql.connection.commit()
+                    elif category == 'rice':
+                        level = request.form.getlist('rice')
+                        for lev in level:
+                            yes = 'yes'
+                            query = 'UPDATE product_level SET {field}=%s WHERE product_id=%s'.format(field=lev)
+                            curs.execute(query, (yes, product_id))
+                            # Commit cursor
+                            mysql.connection.commit()
+                    else:
+                        flash('Product level not fund', 'danger')
+                        return redirect(url_for('admin_add_product'))
+                    # Close Connection
+                    curs.close()
+
+                    flash('Product added successful', 'success')
+                    return redirect(url_for('admin_add_product'))
+                else:
+                    flash('Picture not save', 'danger')
+                    return redirect(url_for('admin_add_product'))
+            else:
+                flash('File not supported', 'danger')
+                return redirect(url_for('admin_add_product'))
+        else:
+            flash('Please fill up all form', 'danger')
+            return redirect(url_for('admin_add_product'))
+    else:
+        return render_template('pages/add_product.html')
+
+
+@app.route('/edit_product', methods=['POST', 'GET'])
+def edit_product():
+    if 'id' in request.args:
+        product_id = request.args['id']
+        curso = mysql.connection.cursor()
+        res = curso.execute("SELECT * FROM products WHERE id=%s", (product_id,))
+        product = curso.fetchall()
+        curso.execute("SELECT * FROM product_level WHERE product_id=%s", (product_id,))
+        product_level = curso.fetchall()
+        if res:
+            if request.method == 'POST':
+                name = request.form.get('name')
+                price = request.form['price']
+                description = request.form['description']
+                available = request.form['available']
+                category = request.form['category']
+                item = request.form['item']
+                code = request.form['code']
+                file = request.files['picture']
+                # Create Cursor
+                if name and price and description and available and category and item and code and file:
+                    pic = file.filename
+                    photo = pic.replace("'", "")
+                    picture = photo.replace(" ", "")
+                    if picture.lower().endswith(('.png', '.jpg', '.jpeg')):
+                        file.filename = picture
+                        save_photo = photos.save(file, folder=category)
+                        if save_photo:
+                            # Create Cursor
+                            cur = mysql.connection.cursor()
+                            exe = curso.execute(
+                                "UPDATE products SET pName=%s, price=%s, description=%s, available=%s, category=%s, item=%s, pCode=%s, picture=%s WHERE id=%s",
+                                (name, price, description, available, category, item, code, picture, product_id))
+                            if exe:
+                                if category == 'Milk':
+                                    level = request.form.getlist('Milk')
+                                    for lev in level:
+                                        yes = 'yes'
+                                        query = 'UPDATE product_level SET {field}=%s WHERE product_id=%s'.format(
+                                            field=lev)
+                                        cur.execute(query, (yes, product_id))
+                                        # Commit cursor
+                                        mysql.connection.commit()
+                                elif category == 'Oil':
+                                    level = request.form.getlist('Oil')
+                                    for lev in level:
+                                        yes = 'yes'
+                                        query = 'UPDATE product_level SET {field}=%s WHERE product_id=%s'.format(
+                                            field=lev)
+                                        cur.execute(query, (yes, product_id))
+                                        # Commit cursor
+                                        mysql.connection.commit()
+                                elif category == 'Vegetables':
+                                    level = request.form.getlist('Vegetables')
+                                    for lev in level:
+                                        yes = 'yes'
+                                        query = 'UPDATE product_level SET {field}=%s WHERE product_id=%s'.format(
+                                            field=lev)
+                                        cur.execute(query, (yes, product_id))
+                                        # Commit cursor
+                                        mysql.connection.commit()
+                                elif category == 'rice':
+                                    level = request.form.getlist('rice')
+                                    for lev in level:
+                                        yes = 'yes'
+                                        query = 'UPDATE product_level SET {field}=%s WHERE product_id=%s'.format(
+                                            field=lev)
+                                        cur.execute(query, (yes, product_id))
+                                        # Commit cursor
+                                        mysql.connection.commit()
+                                else:
+                                    flash('Product level not fund', 'danger')
+                                    return redirect(url_for('admin_add_product'))
+                                flash('Product updated', 'success')
+                                return redirect(url_for('edit_product'))
+                            else:
+                                flash('Data updated', 'success')
+                                return redirect(url_for('edit_product'))
+                        else:
+                            flash('Pic not upload', 'danger')
+                            return render_template('pages/edit_product.html', product=product,
+                                                   product_level=product_level)
+                    else:
+                        flash('File not support', 'danger')
+                        return render_template('pages/edit_product.html', product=product,
+                                               product_level=product_level)
+                else:
+                    flash('Fill all field', 'danger')
+                    return render_template('pages/edit_product.html', product=product,
+                                           product_level=product_level)
+            else:
+                return render_template('pages/edit_product.html', product=product, product_level=product_level)
+        else:
+            return redirect(url_for('admin_login'))
+    else:
+        return redirect(url_for('admin_login'))
