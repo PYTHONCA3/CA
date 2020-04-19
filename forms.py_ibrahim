@@ -1,3 +1,4 @@
+ #REFERENCE: https://www.youtube.com/watch?v=MwZwr5Tvyxo
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, TextAreaField, DecimalField, DateField
 import phonenumbers
@@ -32,14 +33,14 @@ class LoginForm(FlaskForm):
 	submit = SubmitField('Login')
 
 class Productform(FlaskForm):
-	id = IntegerField('Id', validators=[DataRequired()])
+	 
 	pName = StringField('Product Name', validators=[DataRequired(), Length(min=2, max=100)])
 	description = TextAreaField('Product Description', validators=[DataRequired()])
 	price = DecimalField ('Product Price', validators=[DataRequired()])
 	available = DecimalField ('Product Available', validators=[DataRequired()])
-	category = StringField('Product Name', validators=[DataRequired()])
-	pCode = StringField('Product Name', validators=[DataRequired()])
-	item = StringField('Product Name', validators=[DataRequired()])
+	category = StringField('Category', validators=[DataRequired()])
+	pCode = StringField('PCode', validators=[DataRequired()])
+	item = StringField('Item', validators=[DataRequired()])
 	picture = FileField('Image', validators=[FileRequired(), FileAllowed(images, 'Images only!')])
 	date_created = DateField('Date', validators=[DataRequired()])
 	submit = SubmitField('Add')
