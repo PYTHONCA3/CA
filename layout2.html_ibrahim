@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Font awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{{url_for ('static', filename='meq103.css')}}">
+
+   	{% if title %}
+		<title>Groceries At Your Doorstep - {{ title }}</title>
+	{% else %}
+		<title>Groceries At Your Doorstep</title>
+	{% endif %}
+</head>
+<body>
+	<header class="site-header">
+	  <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+	    <div class="container">
+	      <a class="navbar-brand mr-4" href="/">Groceries At Your Doorstep</a>
+	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+	        <span class="navbar-toggler-icon"></span>
+	      </button>
+
+	       
+  </nav>
+  <div class="container-fluid" id="SearchItemsContainer">
+  		<div class= "row">
+  			<div class="col-xs-12" id="SearchItems"></div>
+  		</div>
+  </div>
+</header>
+	
+	<main role="main" class="continer">
+
+   
+	<div class="col-md-8">
+      		{% with messages = get_flashed_messages(with_categories=true) %}
+  				{% if messages %}
+    				<ul class="flashes">
+    				{% for category, message in messages %}
+      					<li class="{{ category }}">{{ message }}</li>
+    				{% endfor %}
+    				</ul>
+  				{% endif %}
+			{% endwith %}
+      </div>
+    <div class="mainbody">      	
+      {% block content %}{% endblock %}
+    </div>
+   
+     
+</main>
+<!--footer-->
+<div class="footer">
+		<div class="footer-content">
+			<div class="footer-section quik">
+				<h2><span class="abt" id="abt">Quick Links</span></h2>
+				<p class="spn"><ul class="quick">
+					<li><a href="{{url_for('home')}}" class='lin'>Home</a></li>
+					<li><a href="{{url_for('register')}}" class='lin'>Sign Up</a></li>
+					<li><a href="{{url_for('login')}}" class='lin'>Log In</a></li>
+				</ul>
+				</p>
+				
+			</div>
+
+			<div class="footer-section About">
+				<h2><span class="abt" id="abt">Social</span></h2>
+				<p class="spn"> <div class="social">
+					<a href="#" class="link"><i class="fa fa-facebook"></i></a>
+					<a href="#" class="link"><i class="fa fa-instagram"></i></a>
+					<a href="#" class="link"><i class="fa fa-twitter"></i></a>
+				</div> </p>
+			</div> 
+			<div class="footer-section About">
+				<h2><span class="abt" id="abt">About</span></h2>
+				<p class="spn"> A web application for online blogs. The website should have a home page with a list of various blogs published by the company, the  
+			</div> 
+		</div>
+		<div class="footer-bottom">
+			  <span class="copy"> &copy;&nbsp;Designed by Group 3 Memeber (Python CA)</span>  
+		</div>
+		</div>	  
+
+
+	<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+    <!--Slick Slider-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <!--Javascript-->
+    <script type="Text/JavaScript" src= "{{url_for('static', filename='scripppts.js')}}"></script>
+
+   
+</body>
+</html>
