@@ -1,0 +1,72 @@
+import sqlite3 as sql  
+from datetime import datetime
+from helo import db, login_manager, admin
+from flask_login import UserMixin
+from flask_admin.contrib.sqla import ModelView 
+from models import Schema
+from flask_admin.menu import MenuLink
+from flask import url_for
+from flask_admin import BaseView, expose
+ 
+
+
+@login_manager.user_loader
+def load_user(user_id):
+	return User.query.get(int(user_id))
+
+class User(db.Model, UserMixin):
+	id = db.Column(db.Integer, primary_key=True)
+	fullname = db.Column(db.String(120), unique=True, nullable=False)
+	username = db.Column(db.String(20), unique=True, nullable=False)
+	email = db.Column(db.String(120), unique=True, nullable=False)
+	image_file = db.Column(db.String(20),  nullable=False, default='default.jpg')
+	password = db.Column(db.String(60),  nullable=False)
+	mobile = db.Column(db.Integer, nullable=False )
+	posts = db.relationship ('Post', backref = 'author', lazy=True )
+
+	def is_active(self):
+		return True
+
+	def __repr__(self):
+		return f"User('{self.username}','{self.email}','{self.image_file}')"
+
+class Post (db.Model):
+ 	id = db.Column(db.Integer, primary_key=True)
+ 	title = db.Column(db.String(100), nullable=False)
+ 	date_posted = db.Column(db.DateTime,nullable=False, default=datetime.utcnow)
+ 	content = db.Column(db.Text, nullable=False)
+ 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False )
+
+ 	def __repr__(self):
+ 		return f"Post('{self.title}','{self.date_posted}')"
+
+ 
+class Products(db.Model):
+	__tablename__ = 'Products'
+	  
+	id = db.Column(db.Integer, primary_key=True)
+	pName = db.Column(db.String, nullable=False)
+	description = db.Column(db.String)
+	price = db.Column(db.Float)
+	available = db.Column(db.Float)
+	category = db.Column(db.String)
+	pCode = db.Column(db.String)
+	item = db.Column(db.String)
+	picture = db.Column(db.String)
+	date_created = db.Column(db.DateTime)
+
+	def __repr__(self):
+		return f"Products('{self.pName}','{self.price}','{self.category}')"
+
+ 
+
+
+ 
+
+
+admin.add_view(ModelView(Products, db.session))
+ 
+admin.add_link(MenuLink(name='Add Products', category='', url= "product_add.html.j2"))
+admin.add_view(ModelView(User, db.session))
+
+ 
