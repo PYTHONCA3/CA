@@ -83,11 +83,12 @@ h1, h2, h3, h4, h5, h6 {
   width: 80%;
   margin:0 10em 10em 8em;
 }
+
 .media-body{
   width: 100%;
   height: 70%;
   margin: 0px;
-  border: 2px solid green;
+   
 }
 .content-section {
   background: #ffffff;
@@ -98,7 +99,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-left: 20px;
   width: 16em;
   height: 25em;
-  border: 2px solid red;
+   
   display: inline-block;
 }
 .article-title {
@@ -124,6 +125,11 @@ a.article-title:hover {
   padding-bottom: 1px;
   margin-bottom: 4px;
   border-bottom: 1px solid #e3e3e3
+}
+.article-metadata .Pimage{
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
 }
 .article-metadata a:hover {
   color: #333;
@@ -311,15 +317,35 @@ a.article-title:hover {
   margin-bottom: 6px;
   margin-left: 1em;
   width: 8em;
-  height: 12em;
-  border: 2px solid red;
+  height: 12em;   
   display: inline-block;
+}
+.content-section .pName{
+  font-size: 15px;
+   
+}
+.article-metadata .Pimage{
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+.article-metadata {
+  width: 100%;
+  height: 50%;
+  padding-bottom: 1px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid #e3e3e3
 }
 .continer{
   min-height: 100%;
   width: 86%;
   margin: 5em 0 5em 2em;
 }
+.main_register {
+  width: 80%;
+  margin:0 5em 5em 2em;
+}
+
 
 .footer{     
     bottom: 0;
@@ -339,6 +365,19 @@ a.article-title:hover {
     color: #cbd5db;
     margin: 1em 1em 2em 2em;     
 }
+
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc_disabled:after,
+table.dataTable thead .sorting_asc_disabled:before,
+table.dataTable thead .sorting_desc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc_disabled:after,
+table.dataTable thead .sorting_desc_disabled:before {
+  bottom: .5em;
+}
  
 } 
 
@@ -352,7 +391,7 @@ a.article-title:hover {
   margin-left: 1em;
   width: 6.5em;
   height: 11em;
-  border: 2px solid red;
+  
   display: inline-block;
 }
 }
@@ -363,12 +402,29 @@ a.article-title:hover {
   padding: 5px 5px;
   border: 1px solid #dddddd;
   border-radius: 3px;
-  margin-bottom: 6px;
+  margin-bottom: 9px;
   margin-left: 1em;
   width: 7em;
   height: 12em;
-  border: 2px solid red;
+   
   display: inline-block;
+}
+ .content-section .pName{
+  font-size: 15px;
+   
+}
+.article-metadata .Pimage{
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+.article-metadata {
+  width: 100%;
+  height: 50%;
+  padding-bottom: 1px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid #e3e3e3
+}
 }
 
 
