@@ -1,26 +1,36 @@
-import os
+ import os
 from flask import Flask 
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from werkzeug.utils import secure_filename
 from flask_uploads import UploadSet, IMAGES, configure_uploads
+from flask_admin import Admin 
+
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 TOP_LEVEL_DIR = os.path.abspath(os.curdir)
-
+UPLOAD_FOLDER = '/path/to/statics/images'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 
 app = Flask(__name__)
+
+# REFERENCE: https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
+# REFERENCE: https://stackoverflow.com/questions/44926465/upload-image-in-flask
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'd82e39598a65e096692a3d26fc6ac3dc'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site1.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['UPLOADS_DEFAULT_DEST'] = TOP_LEVEL_DIR + '/helo/static/img/'
 app.config['UPLOADS_DEFAULT_URL'] = 'http://localhost:5000/static/img/'
  
 app.config['UPLOADED_IMAGES_DEST'] = TOP_LEVEL_DIR + '/helo/static/img/'
 app.config['UPLOADED_IMAGES_URL'] = 'http://localhost:5000/static/img/' 
 
+
+admin = Admin(app, template_mode='bootstrap3')
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
