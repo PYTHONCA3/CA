@@ -1,66 +1,23 @@
-from flask import render_template, url_for, flash, redirect, request
-from helo import app, db, bcrypt
+ from flask import render_template, url_for, flash, redirect, request
+from helo import app, db, bcrypt, images
 from helo.forms import RegistrationForm, LoginForm, Productform
-from helo.model import User, Post
+from helo.model import User, Post, Products
 from flask_login import login_user, current_user, logout_user, login_required
+import sqlite3 as sql
+from models import Schema
 
-posts =[
-	{
-		'author': 'Oladimeji Ibrahim',
-		'title': 'Blog Post 1',
-		'content': 'First Post content',
-		'date_posted': 'April 20, 2020'
-	},
-	{
-		'author': 'Ibrahim IDayo',
-		'title': 'Blog Post 2',
-		'content': 'Second Post content',
-		'date_posted': 'April 22, 2020'
-	},
-	{
-		'author': 'Ibrahim IDayo',
-		'title': 'Blog Post 2',
-		'content': 'Second Post content',
-		'date_posted': 'April 22, 2020'
-	},
-	{
-		'author': 'Ibrahim IDayo',
-		'title': 'Blog Post 2',
-		'content': 'Second Post content',
-		'date_posted': 'April 22, 2020'
-	},
-	{
-		'author': 'Ibrahim IDayo',
-		'title': 'Blog Post 2',
-		'content': 'Second Post content',
-		'date_posted': 'April 22, 2020'
-	},
-	{
-		'author': 'Ibrahim IDayo',
-		'title': 'Blog Post 2',
-		'content': 'Second Post content',
-		'date_posted': 'April 22, 2020'
-	},
-	{
-		'author': 'Ibrahim IDayo',
-		'title': 'Blog Post 2',
-		'content': 'Second Post content',
-		'date_posted': 'April 22, 2020'
-	},
-	{
-		'author': 'Ibrahim IDayo',
-		'title': 'Blog Post 2',
-		'content': 'Second Post content',
-		'date_posted': 'April 22, 2020'
-	}
+ 
 
+ 
 
-]
-
-@app.route('/')
-def home ():
-	posts = Products.query.all()
-	return render_template ('home.html.j2',posts=posts)
+@app.route('/',methods=['GET', 'POST'])
+def home():
+	if request:
+		search_key = request.form.get("searchKey")
+	else:
+		search_key = ""
+	products = Products.query.filter()
+	return render_template('home2.html', **{'get_products': get_products, 'search_key':search_key})
 
 @app.route('/about')
 def about ():
@@ -69,7 +26,7 @@ def about ():
 @app.route ('/register', methods=['GET','POST'])
 def register():
 	if current_user.is_authenticated:
-		return redirect(url_for('home'))
+		return redirect(url_for('show_table'))
 	form = RegistrationForm()
 	if form.validate_on_submit():
 		hashed_password = bcrypt.generate_password_hash (form.password.data).decode('utf-8')
@@ -84,28 +41,37 @@ def register():
 @app.route ('/login', methods=['GET','POST'])
 def login():
 	if current_user.is_authenticated:
-		return redirect(url_for('home'))
+		return redirect(url_for('show_table'))
 	form = LoginForm()
 	if form.validate_on_submit():
 		user =User.query.filter_by(email=form.email.data).first()
 		if user and bcrypt.check_password_hash(user.password, form.password.data):
 			login_user(user, remember=form.remember.data)
 			next_page = request.args.get('next')
-			return redirect (next_page) if next_page else  redirect (url_for('home'))
+			return redirect (next_page) if next_page else  redirect (url_for('show_table'))
 		else:
 			flash('Login Unsucessful, Please check email and password','danger')
 
 	return render_template ('login.html.j2', title='Login', form=form )
 
+ 
 @app.route ('/logout' )
 def logout():
 	logout_user()
-	return redirect (url_for('home'))
+	return redirect (url_for('show_table'))
 
 @app.route ('/account' )
 @login_required
 def account():
 	return render_template ('account.html.j2', title='Accout')
+
+def get_products(pName, description):
+	if(pName==None or description==None):
+		return set(list(Products.query.filter()))
+	else :
+	    return set(list(Products.query.filter(Products.pName.contains(pName))) +
+list(Products.query.filter(Products.description.contains(description))))
+
 
 @app.route("/table", methods=['GET', 'POST'])
 def show_table():
@@ -114,24 +80,112 @@ def show_table():
     else:
         search_key = ""
     products = Products.query.filter()
-    return render_template('table.html', **{'get_products': get_products, 'search_key':search_key})
+    return render_template('home2.html', **{'get_products': get_products, 'search_key':search_key})
 
 @app.route ('/add', methods=['GET','POST'])
-@login_required
 def new_product():
 	form = Productform()
 	if request.method == 'POST':
-		if form.validate_on_submit():
+		if form.validate_on_submit():		
 			filename = images.save(request.files['picture'])
 			url = images.url (filename)
-			new_product = Products (id=form.id.data, pName=form.pName.data, description=form.description.data, price=form.price.data, available=form.available.data, category=form.category.data, pCode=form.pCode.data, item=form.item.data, picture=url, date_created= form.date_created.data, product_id=current_user.id)
-			db.session.add(new_product)
+			newproduct = Products(pName=form.pName.data, description=form.description.data, price=form.price.data, available=form.available.data, category=form.category.data, pCode=form.pCode.data, item=form.item.data, picture=url, date_created= form.date_created.data)
+			db.session.add(newproduct)
 			db.session.commit()
-			flash("Congratulations, your item has been added")
-			return redirect(url_for(url_for('home'),username=current_user.username), 'success')
-		else:
-			flash_errors(form)
-			flash('ERROR! Recipe was not added.', 'error')
-	return render_template ('product_add.html.j2', title='Admin', form=form)
-	 
+			flash("Congratulations, your item has been added")			 
+		else:			 
+			flash('ERROR! Product was not added.', 'error')
+	return render_template ('product_add.html.j2', title='Admin', form=form)	 
+
+
+@app.route('/pay', methods=['GET', 'POST'])
+@login_required
+def pay():
+    if request:
+        print("pay function")
+        total_amt = request.form.get("tot_amt")
+        print(total_amt)
+    return render_template('home.html', value = total_amt)
+
+@app.route('/existingcard')
+def payment():
+   return render_template('payment.html')
+
+@app.route('/newcard')
+def payment1():
+   return render_template('payment1.html')
+
+
+@app.route('/existingrec',methods = ['POST', 'GET'])
+def existingrec():
+   if request.method == 'POST':
+      try:
+         CN = request.form['cardNumber']
+         CHN = 'CHname'
+         ED = request.form['cardExpiry']
+         CVV = request.form['cardCVC']
+         
+         with sql.connect("database.db") as con:
+
+            print("test")
+
+            cur = con.cursor()
+            query = f"SELECT * FROM card_details WHERE card_no = {CN}"
+            cur.execute(query)
+            try:
+               result = cur.fetchone()
+               if len(result) != 0:
+                  msg = "Card Details validated"
+                  msg1 = "Transaction Successful!! Your Order has been placed"
+            except:
+                  msg = "Invalid card details"
+                  msg1 = "Sorry!! Transaction Declined"
+           
+      except:
+         con.rollback()
+         msg = "error in database connection"
+         msg1 = "Recheck Database"
+      finally:
+         return render_template("result.html",msg = msg,msg1 = msg1)
+         con.close()
+
+
+@app.route('/addrec',methods = ['POST', 'GET'])
+def addrec():
+   if request.method == 'POST':
+      try:
+         CN = request.form['cardNumber']
+         CHN = request.form['cardhname']
+         ED = request.form['cardExpiry']
+         CVV = request.form['cardCVC']
+         
+         with sql.connect("database.db") as con:
+            cur = con.cursor()
+            
+            cur.execute("INSERT INTO card_details (card_no,name,exp,cvv) VALUES (?,?,?,?)",(CN,CHN,ED,CVV) )
+            
+            con.commit()
+            msg = "Card details added successfully "
+            msg1 = "Transaction Succuessful!! Your Order has been placed"
+      except:
+         con.rollback()
+         msg = "error in insert operation"
+         msg1 = "Please try valid card"
+      
+      finally:
+         return render_template("result.html",msg = msg,msg1 = msg1)
+         con.close()
+
+
+@app.route('/list1')
+def list1():
+   con = sql.connect("database.db")
+   con.row_factory = sql.Row
+   
+   cur = con.cursor()
+   cur.execute("select * from card_details")
+   
+   rows = cur.fetchall();
+   return render_template("list.html",rows = rows)
+
 	  
