@@ -1,32 +1,58 @@
- {% extends "layout.html" %}
+ {% extends 'layout.html' %}
+{% set total = 0.0 %}
+
+{% block header %}
+  <h1>{% block title %}Groceries At Your Doorstep{% endblock %}</h1>
+{% endblock %}
+
 {% block content %}
-	<div class="main_slider">
-		<div class="post-slider">
-			<i class="fa fa-arrow-circle-left next"></i>
-		<i class ="fa fa-arrow-circle-right prev"></i>	
-			<div class="post-wrapper">
-				<div class="post"><img src="{{url_for('static', filename='pic3.jpg')}}" alt="Post Image" class="slider_image"/> </div>
-				<div class="post"><img src="{{url_for('static', filename='pic4.jpg')}}" alt="Post Image" class="slider_image"/> </div>
-				<div class="post"><img src="{{url_for('static', filename='pic5.jpg')}}" alt="Post Image" class="slider_image"/> </div>
-				<div class="post"><img src="{{url_for('static', filename='postImage.jpg')}}" alt="Post Image" class="slider_image"/> </div>
-				 
-			</div>
-		</div>
-	</div>
-		 	
-	 
-	{% for post in posts %}
+<div class="main_slider">
+    <div class="post-slider" >
+      <i class="fa fa-arrow-circle-left next"></i>
+    <i class ="fa fa-arrow-circle-right prev"></i>  
+      <div class="post-wrapper">
+        <div class="post"><img src="{{url_for('static', filename='pic3.jpg')}}" alt="Post Image" class="slider_image"/> </div>
+        <div class="post"><img src="{{url_for('static', filename='pic4.jpg')}}" alt="Post Image" class="slider_image"/> </div>
+        <div class="post"><img src="{{url_for('static', filename='pic5.jpg')}}" alt="Post Image" class="slider_image"/> </div>
+        <div class="post"><img src="{{url_for('static', filename='postImage.jpg')}}" alt="Post Image" class="slider_image"/> </div>
+         
+      </div>
+    </div>
+  </div>
+  
+<form method="POST" action="/pay">
+  
+    {% for i in get_products(search_key, search_key) %}
+      <article class="media content-section">
+         <h3><span class="pName"> {{i.pName}}</span></h3> 
+      <div class="media-body">
+        
+        <div class="article-metadata">          
+          <a class="mr-2" href="#"><img  class="Pimage" src="{{i.picture}}"></a>          
+        </div>
+        {{i.description}}
+        <small class="text-muted">  </small>
+        <h5>&euro; &nbsp; {{i.price}}&nbsp;<input type="checkbox" name="{{i}}_selected"  data-price={{i.price}} class="checks" /> </h5>
+         </article>
 
-		<article class="media content-section">
-		  <div class="media-body">
-		    <div class="article-metadata">
-		      <a class="mr-2" href="#">{{ post.author }}</a>
-		      <small class="text-muted">{{ post.date_posted }}</small>
-		    </div>
-		    <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
-		    <p class="article-content">{{ post.content }}</p>
-		</div>
+     
+    {% endfor%}
 
-		</article>
-	{%endfor%}
- {% endblock content %}
+      
+   
+<p><input type="text" name="tot_amt"  id="tots"/>&nbsp;<input type="submit" value="Add to Cart"/> </p>
+</form>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+  $(document).on("change", ".checks", function() {
+
+    var checked = $('.checks:checked'),
+        sum = checked.get().reduce(function(prev, item) {
+            return prev + parseFloat(item.getAttribute('data-price'));
+        }, 0);
+    $('#tots').val( sum.toFixed(2) );
+});
+
+  </script>
+{% endblock %}
