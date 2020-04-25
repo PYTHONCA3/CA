@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Product Table{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<form method="POST" action="/table">
+  <label>Search: </label><input type="text" name="searchKey" value="{{search_key}}"/>
+  <input type="submit" value="Search">
+</form>
+<table id="dtProductTable" class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for i in get_products(search_key, search_key) %}
+    <tr>
+      <th scope="row">{{i.id}}</th>
+      <td>{{i.name}}</td>
+      <td>{{i.description}}</td>
+    </tr>
+    {% endfor%}
+  </tbody>
+</table>
+{% endblock %}
